@@ -3,7 +3,7 @@ Create a class called "Node"
 
     Default and non-default Constructor.                                    //DONE: ??
 Provide setters and getters.                                                //DONE
-    Overload the operator ostream << to print the node information.         //DONE
+    Overload the operator ostream << to print the node information.         //TODO
     Create methods called AND() / OR() / XOR() to perform the logical...    //DONE
     operation between two nodes objects.
 
