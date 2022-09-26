@@ -8,7 +8,7 @@
 
 using namespace std;
 
-typedef enum gate_type{
+enum gate_type{
     AND,
     OR,
     NOT,
@@ -18,6 +18,7 @@ typedef enum gate_type{
     NOR
         
 }gate_type;
+
 
 
 class Node {
@@ -40,7 +41,7 @@ class Node {
         string get_name(void){          
             return this->name;
         }
-        static bool AND(Node* A,Node* B){//pure virtual?
+        static bool AND_(Node* A,Node* B){//pure virtual?
             
             return A->data & B->data; 
             
@@ -73,19 +74,26 @@ class Node {
 class Gate  /*protected Node*/
 {
     public:
-        // Gate(Node* input_1 = nullptr,Node* output=nullptr,Node* input_2=nullptr){
-            
-        //     this->input_1 = input_1;
-        //     this->input_2 = input_2;
-        //     this->output=output;
-        // }
+
+
+
         virtual bool simulate_gate(void) = 0;
-        static Gate* Create(gate_type type);
+        static Gate* Create(enum gate_type type);
+
+
         
 
   
     protected:
-        
+
+        Gate(Node* input_1 = nullptr,Node* output=nullptr,Node* input_2=nullptr){
+            
+            this->input_1 = input_1;
+            this->input_2 = input_2;
+            this->output=output;
+        }
+
+
         Node* input_1;
         Node* input_2;
         Node* output;
@@ -125,23 +133,34 @@ class Gate  /*protected Node*/
 
 class AND: public Gate{
 
-    // AND()
+    public:
+    
+    AND(Node* input_1 = nullptr,Node* output=nullptr,Node* input_2=nullptr)
+    {
+        this->input_1=input_1;
+        this->input_2=input_2;
+        this->output=output;    
+    }
+    
 
     bool simulate_gate(void) override{
         
-        return Node::AND(input_1,input_2);
+        return Node::AND_(input_1,input_2);
 
     }
 };
-class NAND: protected Gate{
+class NAND: public Gate{
 
     bool simulate_gate(void) override{
         
-        return !(Node::AND(input_1,input_2));
+        return !(Node::AND_(input_1,input_2));
 
     }
 };
-class OR: protected Gate{
+class OR: public Gate{
+
+    // OR(): Gate()
+    // {}
 
     bool simulate_gate(void) override{
         
@@ -150,7 +169,7 @@ class OR: protected Gate{
     }
 };
 
-class NOR: protected Gate{
+class NOR: public Gate{
 
     bool simulate_gate(void) override{
         
@@ -158,7 +177,7 @@ class NOR: protected Gate{
 
     }
 };
-class XOR: protected Gate{
+class XOR: public Gate{
 
     bool simulate_gate(void) override{
         
@@ -166,7 +185,7 @@ class XOR: protected Gate{
 
     }
 };
-class XNOR: protected Gate{
+class XNOR: public Gate{
 
     bool simulate_gate(void) override{
         
@@ -174,7 +193,7 @@ class XNOR: protected Gate{
 
     }
 };
-class NOT: protected Gate{
+class NOT: public Gate{
 
     bool simulate_gate(void) override{
         
@@ -183,17 +202,18 @@ class NOT: protected Gate{
     }
 };
 
-Gate* Gate::Create(gate_type type) {
+Gate* Gate::Create(enum gate_type type) {
 
     if (type == AND)
-
-        return new AND();
+        return new class AND();
 
     else if (type == OR)
-        return new OR::OR();
+        return new class OR();
     else if (type == XOR)
-        return new XOR::XOR();
+        return new class XOR();
     else return NULL;
+
+
 
 }
 
@@ -251,16 +271,16 @@ class Simulator /*private Gate*///singelton
 class GateGeneratortor: private Simulator{
     private:
 
-
+        enum gate_type type;
 
     public: 
         void parseinput(void){
 
         }
     
-        Gate& createGate(gate_type gate){//factory mehtod.. 
+        Gate& createGate(enum gate_type gate){//factory mehtod.. 
 
-
+            return *(Gate::Create(type));
 
         }
     
