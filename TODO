@@ -1,0 +1,42 @@
+Create a class called "Node" 
+    
+
+    Default and non-default Constructor.
+    Provide setters and getters.
+    Overload the operator ostream << to print the node information.
+    Create methods called AND() / OR() / XOR() to perform the logical operation between two nodes objects.
+    Add any needed functions according to your design.
+
+
+Create a class Called "Gate"
+
+    which has two input nodes and one output node data members.image
+    Default and non-default Constructors.
+    Provide getters and setters for its nodes.
+    Implement the gate types AND / OR / NAND / NOR / XOR / XNOR / NOT.
+    function simulateGate() returns the logic value of the gate according to its type.
+
+Create a class called "Simulator"
+
+    which accpets all types of gates then calculate circuits’ outputs
+
+    array of pointers to Gate and array of pointers to Node.
+    Method postGate() accepts a pointer to a created gate to insert it into the array.
+    Method postNode() accepts a pointer to a created node to insert it into the array.
+    Method FindNode() accepts a string node's name to find it in the container and return its address.
+    Method startSimulate() start the simulation for each gate by looping over the gates container
+
+    Note: Only one object can be created from the Simualtor class.
+
+    Recommended: Make the gates container and nodes container as a vector to be easliy dynamic allocated during the simulation.
+
+
+
+Create a class called "GateGenerator"
+
+    that generates the nodes and all sepcified gates from the input then post them to the simulator.
+
+    Function parseInput() reads the inputs and parses each keyword ("SIM"/"OUT",..) to the appropriate logic.
+    Function createNode() creates a node and return its address.
+    Function createGate() creates a (AND,OR,...) gates according to the input and return its address, it is advisable to use a factory function to have better practice on polymorphic objects.
+    Add any needed functions as your design says so!.
