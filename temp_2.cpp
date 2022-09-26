@@ -8,6 +8,17 @@
 
 using namespace std;
 
+typedef enum gate_type{
+    AND,
+    OR,
+    NOT,
+    NAND,
+    XOR,
+    XNOR,
+    NOR
+        
+}gate_type;
+
 
 class Node {
 
@@ -62,13 +73,15 @@ class Node {
 class Gate  /*protected Node*/
 {
     public:
-        Gate(Node* input_1 = nullptr,Node* output=nullptr,Node* input_2=nullptr){
+        // Gate(Node* input_1 = nullptr,Node* output=nullptr,Node* input_2=nullptr){
             
-            this->input_1 = input_1;
-            this->input_2 = input_2;
-            this->output=output;
-        }
+        //     this->input_1 = input_1;
+        //     this->input_2 = input_2;
+        //     this->output=output;
+        // }
         virtual bool simulate_gate(void) = 0;
+        static Gate* Create(gate_type type);
+        
 
   
     protected:
@@ -87,6 +100,7 @@ class Gate  /*protected Node*/
         }
         
         Node*  get_input_2(void){
+
             return (this->input_2);
 
             // return this->input_2->get_data();
@@ -109,7 +123,9 @@ class Gate  /*protected Node*/
 
 };
 
-class AND: protected Gate{
+class AND: public Gate{
+
+    // AND()
 
     bool simulate_gate(void) override{
         
@@ -167,7 +183,19 @@ class NOT: protected Gate{
     }
 };
 
+Gate* Gate::Create(gate_type type) {
 
+    if (type == AND)
+
+        return new AND();
+
+    else if (type == OR)
+        return new OR::OR();
+    else if (type == XOR)
+        return new XOR::XOR();
+    else return NULL;
+
+}
 
 class Simulator /*private Gate*///singelton
 {
@@ -221,19 +249,27 @@ class Simulator /*private Gate*///singelton
 };
 
 class GateGeneratortor: private Simulator{
+    private:
+
+
 
     public: 
         void parseinput(void){
 
         }
-    /*
-        Gate& createGate(void){
+    
+        Gate& createGate(gate_type gate){//factory mehtod.. 
+
+
 
         }
+    
         Node& createNode(void){
 
+            return (*(new Node()));
+        
         }
-    */
+    
 
 };
 
