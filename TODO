@@ -46,3 +46,13 @@ Create a class called "GateGenerator"
     Function createGate():                                                                              //DONE
         creates a (AND,OR,...) gates according to the input and return its address,
         it is advisable to use a factory function to have better practice on polymorphic objects.
+
+
+tested:
+    generator:
+        
+
+        create node     //DONE
+        create gate     //DONE
+    
+    

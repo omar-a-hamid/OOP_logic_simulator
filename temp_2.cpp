@@ -4,6 +4,7 @@
 #include <iostream>
 #include <algorithm>
 #include <string.h>
+#include <assert.h>
 // #include <>
 
 using namespace std;
@@ -25,14 +26,14 @@ class Node {
 
     public: 
 
-        Node(int data=0, string name=""){        
+        Node(bool data=0, string name="N/A"){        
             this->data=data;
             this->name=name;
         }
         void set_name(string name){//virtual
             this->name = name;
         }
-        void set_data(int data){
+        void set_data(bool data){
             this->data =data ;
         }
         bool get_data(void){        
@@ -56,6 +57,8 @@ class Node {
             return A->data ^ B->data;        
 
         }
+    friend ostream& operator<<(ostream& out, const Node& node);
+
     private: 
         string name;
         bool data;//bool
@@ -71,6 +74,15 @@ class Node {
         
     
 };
+
+
+
+ostream& operator<<(ostream& out, const Node& node)
+{
+    out <<  node.name << " " <<node.data;
+    return out;
+}
+
 class Gate  /*protected Node*/
 {
     public:
@@ -101,6 +113,8 @@ class Gate  /*protected Node*/
         
     protected: 
     
+
+    public:
        /*return node values*/
         Node* get_input_1(void){
         
@@ -145,7 +159,9 @@ class AND: public Gate{
 
     bool simulate_gate(void) override{
         
-        return Node::AND_(input_1,input_2);
+        this->output->set_data(Node::AND_(input_1,input_2));
+        return this->output->get_data();
+
 
     }
 };
@@ -211,7 +227,15 @@ Gate* Gate::Create(enum gate_type type) {
         return new class OR();
     else if (type == XOR)
         return new class XOR();
-    else return NULL;
+    else if (type == NOR)
+        return new class NOR();
+    else if (type == XNOR)
+        return new class XNOR();
+    else if (type == NOT)
+        return new class NOT();
+    else if (type == NAND)
+        return new class NAND();
+    else assert(false);
 
 
 
@@ -278,15 +302,15 @@ class GateGeneratortor: private Simulator{
 
         }
     
-        Gate& createGate(enum gate_type gate){//factory mehtod.. 
+        Gate* createGate(enum gate_type type){//factory mehtod.. 
 
-            return *(Gate::Create(type));
+            return (Gate::Create(type));
 
         }
     
-        Node& createNode(void){
+        Node* createNode(void){
 
-            return (*(new Node()));
+            return ((new Node()));
         
         }
     
@@ -296,6 +320,66 @@ class GateGeneratortor: private Simulator{
 int main() {
     /* Enter your code here. Read input from STDIN. Print output to STDOUT */   
     Simulator simulator();
+    GateGeneratortor gen;
+
+    // Node* node_i1 = (gen.createNode());
+    Node* node_i1= new Node(0,"A");
+    Node* node_i2 = (gen.createNode());
+    Node* node_o = (gen.createNode());
+
+    Gate* gate = (gen.createGate(AND));
+
+    gate->set_input_1(node_i1);
+    gate->set_input_2(node_i2);
+    gate->set_output(node_o);
+
+
+    node_i1->set_data(true);
+    node_i2->set_data(true);
+
+    cout <<gate->simulate_gate()<<endl;
+
+    node_i1->set_data(false);
+    node_i2->set_data(true);
+
+    cout <<gate->simulate_gate()<<endl;
+        
+    node_i1->set_data(true);
+    node_i2->set_data(false);
+
+    cout <<gate->simulate_gate()<<endl;
+    node_i1->set_data(false);
+    node_i2->set_data(false);
+
+    cout <<gate->simulate_gate()<<endl;
+
+    node_i1->set_data(true);
+    node_i2->set_data(true);
+
+    cout <<gate->simulate_gate()<<endl;
+
+    cout << "fetch data: "<<node_o->get_data() <<endl;
+    node_i1->set_data(false);
+    node_i2->set_data(true);
+
+    cout <<gate->simulate_gate()<<endl;
+
+    // cout << "fetch data: "<<node_o->get_data() <<endl;
+    cout << *node_o<<endl;
+
+
+    // cout<<node_o->get_data()<<endl;
+
+
+    // Node* node_ptr;
+    // Node node_ptr;
+
+    // node_ptr->set_data(1);
+
+    // cout << node_ptr->get_data()<<endl;
+
+
+    // gen.createNode();
 
     // parseinput()
     // simulate()
