@@ -421,12 +421,13 @@ class GateGeneratortor: private Simulator{
                     /*search for node, set its logic value*/
                     
                 }else if(command=="SIM"){
+                    /*startSimulate in simulator class, scans over all gate and  runs them*/
                     // cout<<"sim" <<endl;
                     
 
                 }else if(command=="OUT"){
                     // cout<<"out" <<endl;
-                    /*search for node and printet, if all, print all... */
+                    /*search for node and print it, if all, print all... */
 
                 }
 
@@ -456,7 +457,7 @@ class GateGeneratortor: private Simulator{
 
 
             /*
-            check if nodes exsist
+            check if nodes exsist, if nodes exsist return address else create, use simulator functions               //TODO
             
             */
 

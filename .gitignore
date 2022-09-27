@@ -2,3 +2,5 @@
 *.exe
 
 .vscode/tasks.json
+temp_.cpp
+temp_2.cpp

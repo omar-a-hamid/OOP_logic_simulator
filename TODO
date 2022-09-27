@@ -1,5 +1,7 @@
 TODO:
     change all simulate_gate functions in all classes
+    make simulator a "singelton"
+    complete parsing function
 
 reqs: 
 
