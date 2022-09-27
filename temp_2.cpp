@@ -354,7 +354,8 @@ class GateGeneratortor: private Simulator{
                     */
                     gate_parse(AND, command_data);
 
-/*                     Gate* gate_ptr = createGate(AND);
+                    /*
+                    Gate* gate_ptr = createGate(AND);
                     Node* node_i1 = createNode();
                     node_i1->set_name(command_data[0]);
                     Node* node_i2 = createNode();
