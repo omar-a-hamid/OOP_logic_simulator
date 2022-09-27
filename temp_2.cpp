@@ -338,7 +338,7 @@ class GateGeneratortor: private Simulator{
     public: 
         void parseinput(void){
             static string stdin_string;
-            char gate_1,gate_2,gate_3;
+            // char gate_1,gate_2,gate_3;
             while(cin){
 
                 getline(cin, stdin_string);
@@ -438,14 +438,14 @@ class GateGeneratortor: private Simulator{
             
 
         }
-    
-        Gate* createGate(enum gate_type type){//factory mehtod.. 
+    private:
+        Gate* createGate(enum gate_type type){//factory mehtod.. //TODO: pass args? 
 
             return (Gate::Create(type));
 
         }
     
-        Node* createNode(void){
+        Node* createNode(void){                                 //TODO: pass args?
 
             return ((new Node()));
         
