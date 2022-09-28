@@ -30,6 +30,10 @@ class Node {
             this->data=data;
             this->name=name;
         }
+        Node(char name='0'){        
+            this->data=0;
+            this->name=name;
+        }
         void set_name(char name){//virtual
             this->name = name;
         }
@@ -79,7 +83,7 @@ class Node {
 
 ostream& operator<<(ostream& out, const Node& node)
 {
-    out <<  node.name << " " <<node.data;
+    out <<  node.name << ": " <<node.data;
     return out;
 }
 
@@ -168,8 +172,9 @@ class AND: public Gate{
 class NAND: public Gate{
 
     bool simulate_gate(void) override{
-        
-        return !(Node::AND_(input_1,input_2));
+
+        this->output->set_data(!(Node::AND_(input_1,input_2)));
+        return this->output->get_data();
 
     }
 };
@@ -180,7 +185,9 @@ class OR: public Gate{
 
     bool simulate_gate(void) override{
         
-        return (Node::OR(input_1,input_2));
+        this->output->set_data (Node::OR(input_1,input_2));
+        return this->output->get_data();
+
 
     }
 };
@@ -189,7 +196,8 @@ class NOR: public Gate{
 
     bool simulate_gate(void) override{
         
-        return !(Node::OR(input_1,input_2));
+        this->output->set_data(!(Node::OR(input_1,input_2)));
+        return this->output->get_data();
 
     }
 };
@@ -197,7 +205,9 @@ class XOR: public Gate{
 
     bool simulate_gate(void) override{
         
-        return (Node::XOR(input_1,input_2));
+        this->output->set_data (Node::XOR(input_1,input_2));
+        return this->output->get_data();
+ 
 
     }
 };
@@ -205,7 +215,10 @@ class XNOR: public Gate{
 
     bool simulate_gate(void) override{
         
-        return !(Node::XOR(input_1,input_2));
+        this->output->set_data (!(Node::XOR(input_1,input_2)));
+
+        return this->output->get_data();
+
 
     }
 };
@@ -213,10 +226,13 @@ class NOT: public Gate{
 
     bool simulate_gate(void) override{
         
-        return !(input_1);
+        this->output->set_data (!(input_1));
+        return this->output->get_data();
+
 
     }
 };
+
 
 Gate* Gate::Create(enum gate_type type) {
 
@@ -227,27 +243,27 @@ Gate* Gate::Create(enum gate_type type) {
             break;
         
         case NAND: 
-            return new class AND();
+            return new class NAND();
             break;
                     
         case OR: 
-            return new class AND();
+            return new class OR();
             break;
                     
         case NOR: 
-            return new class AND();
+            return new class NOR();
             break;
                     
         case XOR: 
-            return new class AND();
+            return new class XOR();
             break;
                     
         case XNOR: 
-            return new class AND();
+            return new class XNOR();
             break;
                                 
         case NOT: 
-            return new class AND();
+            return new class NOT();
             break;
 
         default:
@@ -286,6 +302,8 @@ class Simulator /*private Gate*///singelton
         static vector<Gate*> gates;
         static vector<Node*> nodes;
        
+
+    public:
         static void postNode(Node* node){
             nodes.push_back(node);
         }
@@ -294,6 +312,11 @@ class Simulator /*private Gate*///singelton
             gates.push_back(gate);
         }
        
+        static void print_all_nodes(void){
+            for(auto const& node : nodes)
+                cout << *node<<endl;
+
+        }
         static Node* FindNode(char node_name){
 
             for(auto const& node : nodes){
@@ -305,15 +328,17 @@ class Simulator /*private Gate*///singelton
 
                 }
 
+
             }
             /*
             for(auto node in nodes)
             if node->name == name 
             return node;
             */
+           return nullptr;
 
         }
-        void startSimulate(void){
+        static void startSimulate(void){
 
             for(auto const& gate : gates){
 
@@ -329,6 +354,10 @@ class Simulator /*private Gate*///singelton
 
 
 };
+
+vector<Node*> Simulator::nodes;
+vector<Gate*> Simulator::gates;
+
 
 class GateGeneratortor: private Simulator{
     private:
@@ -418,17 +447,35 @@ class GateGeneratortor: private Simulator{
                     // cout<<"not" <<endl;
                     
                 }else if(command=="SET"){
+
+
+                    Node* node_ptr = createNode(command_data[0]);
+                    if(command_data[2]=='0')
+                        node_ptr->set_data(false);
+                    else    
+                        node_ptr->set_data(true);
                     // cout<<"set" <<endl;
                     /*search for node, set its logic value*/
                     
                 }else if(command=="SIM"){
+
                     /*startSimulate in simulator class, scans over all gate and  runs them*/
+                    Simulator::startSimulate();
+
                     // cout<<"sim" <<endl;
                     
 
                 }else if(command=="OUT"){
                     // cout<<"out" <<endl;
                     /*search for node and print it, if all, print all... */
+                    if(command_data.length()==1){//one char 
+                        Node* node_ptr = createNode(command_data[0]);
+                        cout<<*node_ptr<<endl;
+                    }else{/*if all*/
+                        
+                        Simulator::print_all_nodes();
+
+                    }
 
                 }
 
@@ -445,9 +492,16 @@ class GateGeneratortor: private Simulator{
 
         }
     
-        Node* createNode(void){                                 //TODO: pass args?
+        Node* createNode(char name){      
+            
+           if(Simulator::FindNode(name)){
+                return Simulator::FindNode(name);
+           }else{
 
-            return ((new Node()));
+                Node* new_node = new Node(name);
+                Simulator::postNode(new_node);
+                return (new_node);
+           }
         
         }
     private: 
@@ -461,29 +515,30 @@ class GateGeneratortor: private Simulator{
             check if nodes exsist, if nodes exsist return address else create, use simulator functions               //TODO
             
             */
+            Node* node_i1 = createNode(command_data[0]);
 
-            Node* node_i1 = createNode();
-            Node* node_o = createNode();
 
-            node_i1->set_name(command_data[0]);
+             
+
             if (type == NOT){
 
-                node_o->set_name(command_data[2]);
+                Node* node_o = createNode(command_data[2]);
+                gate_ptr->set_output(node_o);
+
 
 
             }else{
-                Node* node_i2 = createNode();
-                node_i2->set_name(command_data[2]);
-
-                node_o->set_name(command_data[4]);
-
+                Node* node_i2 = createNode(command_data[2]);
+                Node* node_o = createNode(command_data[4]);
+                gate_ptr->set_output(node_o);
                 gate_ptr->set_input_2(node_i2);
 
             }
 
 
             gate_ptr->set_input_1(node_i1);
-            gate_ptr->set_output(node_o);
+            Simulator::postGate(gate_ptr);
+
         
         }
 
@@ -494,6 +549,7 @@ class GateGeneratortor: private Simulator{
 int main() {
     /* Enter your code here. Read input from STDIN. Print output to STDOUT */   
     Simulator simulator();
+
     GateGeneratortor gen;
 
     gen.parseinput();

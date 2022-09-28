@@ -1,7 +1,7 @@
 TODO:
-    change all simulate_gate functions in all classes
+    change all simulate_gate functions in all classes   // DONE?
     make simulator a "singelton"
-    complete parsing function
+    complete parsing function       //DONE 
 
 reqs: 
 
@@ -9,8 +9,8 @@ Create a class called "Node"
     
 
     Default and non-default Constructor.                                    //DONE: ??
-Provide setters and getters.                                                //DONE
-    Overload the operator ostream << to print the node information.         //TODO
+    Provide setters and getters.                                                //DONE
+    Overload the operator ostream << to print the node information.         //DONE
     Create methods called AND() / OR() / XOR() to perform the logical...    //DONE
     operation between two nodes objects.
 
@@ -46,7 +46,7 @@ Create a class called "GateGenerator"
 
     that generates the nodes and all sepcified gates from the input then post them to the simulator.
 
-    Function parseInput():                                                                              //TODO
+    Function parseInput():                                                                              //DONE
         reads the inputs and parses each keyword ("SIM"/"OUT",..) to the appropriate logic.
     Function createNode():                                                                              //DONE
         creates a node and return its address.
