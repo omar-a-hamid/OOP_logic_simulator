@@ -371,7 +371,7 @@ class GateGeneratortor: private Simulator{
             while(getline(cin, stdin_string)){
 
                 // getline(cin, stdin_string);
-                string delimiter = " ";
+                const string delimiter = " ";
                 
                 string command = stdin_string.substr(0, stdin_string.find(delimiter));
                 string command_data = stdin_string.substr(stdin_string.find(delimiter)+1 );
@@ -450,9 +450,11 @@ class GateGeneratortor: private Simulator{
                     
                 }else if(command=="SET"){
 
+                    string node_name = command_data.substr(0, command_data.find(delimiter));
+                    string node_value = command_data.substr( command_data.find(delimiter)+1);
 
-                    Node* node_ptr = createNode(command_data);
-                    if(command_data[2]=='0')
+                    Node* node_ptr = createNode(node_name);
+                    if(node_value[0]=='0')
                         node_ptr->set_data(false);
                     else    
                         node_ptr->set_data(true);
@@ -472,16 +474,19 @@ class GateGeneratortor: private Simulator{
                     // cout << command_data<<endl;
 
                     /*search for node and print it, if all, print all... */
-                    if(command_data.length()==1){//one char 
-                        Node* node_ptr = createNode(command_data);
-                        cout<<*node_ptr<<endl;
-                    }else if(command_data=="ALL"){/*if all*/
+                    if(command_data=="ALL"){/*if all*/
                         
                         Simulator::print_all_nodes();
 
-                    }else{
-
-                        assert(false);
+                    
+                    }/*else if(command_data.length()==1){//one char 
+                        Node* node_ptr = createNode(command_data);
+                        cout<<*node_ptr<<endl; 
+                    }*/
+                    else{
+                        Node* node_ptr = createNode(command_data);
+                        cout<<*node_ptr<<endl; 
+                        // assert(false);
                         
                     }
 
@@ -518,26 +523,41 @@ class GateGeneratortor: private Simulator{
         {                    
             Gate* gate_ptr = createGate(type);
 
+            string delimiter = " ";
+
+
+            string input_1_name = command_data.substr(0, command_data.find(delimiter));
+            string second_input = command_data.substr(command_data.find(delimiter)+1);
+
 
             /*
             check if nodes exsist, if nodes exsist return address else create, use simulator functions               //TODO
             
             */
-            Node* node_i1 = createNode(command_data[0]);
+            Node* node_i1 = createNode(input_1_name);
 
 
              
 
             if (type == NOT){
 
-                Node* node_o = createNode(command_data[2]);
+                // string output_name = command_data.substr(command_data.find(delimiter)+1);
+
+
+                Node* node_o = createNode(second_input);
                 gate_ptr->set_output(node_o);
 
 
 
             }else{
-                Node* node_i2 = createNode(command_data[2]);
-                Node* node_o = createNode(command_data[4]);
+
+
+                string output_name = second_input.substr(second_input.find(delimiter)+1);
+                string input_2_name = second_input.substr(0, second_input.find(delimiter));
+
+
+                Node* node_i2 = createNode(input_2_name);
+                Node* node_o = createNode(output_name);
                 gate_ptr->set_output(node_o);
                 gate_ptr->set_input_2(node_i2);
 
