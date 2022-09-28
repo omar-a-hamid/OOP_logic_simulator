@@ -226,7 +226,7 @@ class NOT: public Gate{
 
     bool simulate_gate(void) override{
         
-        this->output->set_data (!(input_1));
+        this->output->set_data(!(input_1->get_data()));
         return this->output->get_data();
 
 
