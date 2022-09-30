@@ -131,12 +131,7 @@ class AND : public Gate
 {
 
 public:
-    AND(Node *input_1 = nullptr, Node *output = nullptr, Node *input_2 = nullptr) // TODO: delete
-    {
-        this->input_1 = input_1;
-        this->input_2 = input_2;
-        this->output = output;
-    }
+
 
     bool simulate_gate(void) override
     {
@@ -253,26 +248,44 @@ class Simulator
 {
 
 private:
-    static vector<Gate *> gates;
-    static vector<Node *> nodes;
+    vector<Gate *> gates;
+    vector<Node *> nodes;
+    
+    static Simulator *instance;
+    
+    Simulator(){
+        
+    }
 
 public:
-    static void postNode(Node *node)
+    
+    static Simulator* get_instance(void){
+        
+        if (!instance){
+          instance = new Simulator;
+        }
+      return instance;
+        
+   }
+        
+    
+    
+    void postNode(Node *node)
     {
         nodes.push_back(node);
     }
 
-    static void postGate(Gate *gate)
+    void postGate(Gate *gate)
     {
         gates.push_back(gate);
     }
 
-    static void print_all_nodes(void)
+    void print_all_nodes(void)
     {
         for (auto const &node : nodes)
             cout << *node << endl;
     }
-    static Node *FindNode(char node_name)
+    Node *FindNode(char node_name)
     {
 
         for (auto const &node : nodes)
@@ -287,7 +300,7 @@ public:
 
         return nullptr;
     }
-    static void startSimulate(void)
+    void startSimulate(void)
     {
 
         for (auto const &gate : gates)
@@ -299,14 +312,22 @@ public:
     }
 };
 
-vector<Node *> Simulator::nodes;
-vector<Gate *> Simulator::gates;
+// vector<Node *> Simulator::nodes;
+// vector<Gate *> Simulator::gates;
 
-class GateGeneratortor : private Simulator
+Simulator *Simulator::instance = 0;
+
+class GateGeneratortor
 {
-
+    Simulator *simulator;
 
 public:
+    
+    GateGeneratortor(){
+        
+        this->simulator = Simulator::get_instance();
+        
+    }
     void parseinput(void)
     {
         static string stdin_string;
@@ -366,7 +387,7 @@ public:
             }
             else if (command == "SIM")
             {
-                Simulator::startSimulate();
+                simulator->startSimulate();
 
 
             }
@@ -381,7 +402,7 @@ public:
                 else
                 {
 
-                    Simulator::print_all_nodes();
+                    simulator->print_all_nodes();
                 }
             }
         }
@@ -399,15 +420,15 @@ private:
     Node *createNode(char name)
     {
 
-        if (Simulator::FindNode(name))
+        if (simulator->FindNode(name))
         {
-            return Simulator::FindNode(name);
+            return simulator->FindNode(name);
         }
         else
         {
 
             Node *new_node = new Node(name);
-            Simulator::postNode(new_node);
+            simulator->postNode(new_node);
             return (new_node);
         }
     }
@@ -437,14 +458,14 @@ private:
             gate_ptr->set_input_2(node_i2);
         }
         gate_ptr->set_input_1(node_i1);
-        Simulator::postGate(gate_ptr);
+        simulator->postGate(gate_ptr);
     }
 };
 
 int main()
 {
     /* Enter your code here. Read input from STDIN. Print output to STDOUT */
-    Simulator simulator();
+    // Simulator simulator();
     GateGeneratortor gen;
     gen.parseinput();
     return 0;
